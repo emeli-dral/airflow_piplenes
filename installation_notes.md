@@ -101,7 +101,7 @@ docker --version
 
 3. Create directory 
 ```
-mkdir airflow_docekr
+mkdir airflow_docker
 ```
 and go to this directory
 
