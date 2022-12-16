@@ -12,7 +12,7 @@ Check docker and docker-compose version in terminal
 docker --version
 ```
 
-2. Create priject directory and go there
+2. Create project directory and go there
 ```
 mkdir airflow_docker
 ```
