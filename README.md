@@ -159,7 +159,7 @@ RUN pip install --no-cache-dir --user -r /requirements.txt
 ```
  
 3. Build the extenstion and create a tag for it
- docker build . —tag extending_airflow:latest
+ ```docker build . --tag extending_airflow:latest```
 
 4. Update docker-compose with the extended image
 Open docker-compose.yaml 
