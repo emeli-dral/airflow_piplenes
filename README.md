@@ -90,7 +90,7 @@ condition: service_completed_successfully
 mkdir -p ./dags ./logs ./plugins ./reports
 ```
 
-4. initialize db
+7. initialize db
 ```
 docker-compose up airflow-init
 ```
@@ -102,7 +102,7 @@ airflow_docker-airflow-init-1  | 2.5.0
 airflow_docker-airflow-init-1 exited with code 0
 ```
 
-7. Run airflow in docker
+8. Run airflow in docker
 ```
  docker-compose up
 (docker-compose up -d for detached mode)
@@ -113,7 +113,7 @@ To see what is running:
 docker ps
 ```
 
-8. Check airflow dashboard in your browser
+9. Check airflow dashboard in your browser
 http://0.0.0.0:8080/home
 user/password: airflow/airflow
 
