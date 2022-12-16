@@ -140,3 +140,30 @@ docker-compose up airflow-init
 ```
 docker-compose up -d
 ```
+
+## Install Python packages inside airflow docker
+1. Create requirements.txt file in the project directory.
+List there pythin packages you need with the specified versions, for instance:
+```
+scikit-learn==0.24.0
+pandas==1.1.5
+```
+
+2. Create Dockerfile in the project directory.
+List there instructions to copy the requirements.txt to the docker anf install packages from there
+```
+FROM apache/airflow:2.5.0
+COPY requirements.txt /requirements.txt
+RUN pip install --user --upgrade pip
+RUN pip install --no-cache-dir --user -r /requirements.txt
+```
+ 
+3. Build the extenstion and create a tag for it
+ docker build . —tag extending_airflow:latest
+
+4. Update docker-compose with the extended image
+Open docker-compose.yaml 
+change tag for airflow image from: ```image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.5.0}``` to ```image: ${AIRFLOW_IMAGE_NAME:-extending_airflow:latest}```
+ 
+5. Rebuild airflow-webserver and airflow-scheduler
+```docker-compose up -d --no-deps --build airflow-webserver airflow-scheduler```
