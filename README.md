@@ -25,6 +25,7 @@ source airflow/bin/activate
 ```
 
 4. Load docker compose file 
+
 Before running the following command make sure, that you use the likn with airflow version you want to install. 
 If you prefer to install the other version of airflow update the link.
 ```
