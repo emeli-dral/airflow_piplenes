@@ -1,7 +1,5 @@
 # airflow_piplenes
 
-## Airflow installation from scratch
-
 More info on Airflow installation can be found in the official [docs](https://airflow.apache.org/docs/apache-airflow/stable/installation/index.html) or  [installation notes](installation_notes.md)
 
 ## Airflow docker installation
