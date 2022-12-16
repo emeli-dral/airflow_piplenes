@@ -2,50 +2,48 @@
 
 ## Airflow installation from scratch
 
-To install airflow from scratch follow the airflow official [docs](https://airflow.apache.org/docs/apache-airflow/stable/installation/index.html) or instructions from [installation notes](installation_notes.md)
+More info on Airflow installation can be found in the official [docs](https://airflow.apache.org/docs/apache-airflow/stable/installation/index.html) or  [installation notes](installation_notes.md)
 
-## To use airflow installation on Mac/Linux from this repo folow steps from below:
+## Airflow docker installation
+1. Install Docker and Docker Compose on your laptop https://docs.docker.com/engine/install/ 
+For Mac OS and Windows install Docker Desktop (it includes both).
+Switch it on.
 
-If you do not have Docker and Docker-compose install Docker and Docker Compose on your laptop https://docs.docker.com/engine/install/
+Check docker and docker-compose version in terminal
+```
+docker --version
+```
 
-1. [optional cause we use Docker!] Create & activate virtual env
+2. Create priject directory and go there
+```
+mkdir airflow_docker
+```
+and go to this directory
 
+3. [optional cause we use Docker!] Create & activate virtual env
 ```
 python -m venv airflow
 source airflow/bin/activate
 ```
 
-2. Clone the repo
-
-3. Go to the repo folder and initicalize airflow `docker compose up airflow-init`
-
-4. Run airflow in docker
-   `docker-compose up`
-   ( or `docker-compose up -d` for detached mode)
-
-5. Go to your browser
-   http://0.0.0.0:8080/home
-
-user & password: airflow/airflow
-
-## To use airflow installation on Windows from this repo folow steps from below:
-
-1. Make new directory
-
+4. Load docker compose file 
+Before running the following command make sure, that you use the likn with airflow version you want to install. 
+If you prefer to install the other version of airflow update the link.
 ```
-mkdir airflow_docker
+ curl -LfO 'https://airflow.apache.org/docs/apache-airflow/2.5.0/docker-compose.yaml'
 ```
 
-2. Paste the installing command from the repo
+5. Update docker-compose.yaml 
+Open docker-compose.yaml file with any IDE or text editor
 
-```
-curl -LfO 'https://airflow.apache.org/docs/apache-airflow/2.5.0/docker-compose.yaml'
-```
+**Note:** Celery Executor is needed for scaling (scale out the number of workers)
+Flower is needed for monitoring.
+We are not going to use either of them.
 
-3. Open docker-composer file with any IDE
+5.1 Instead of Celery we are going to use airflow locally.
+Update: ```AIRFLOW__CORE__EXECUTOR: CeleryExecutor``` with ```AIRFLOW__CORE__EXECUTOR: LocalExecutor```
 
-4. Delete selected paths:
-
+5.2 Delete or comment the following file parts:
 ```
 AIRFLOW**CELERY**RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
 AIRFLOW**CELERY**BROKER_URL: redis://:@redis:6379/0
@@ -81,22 +79,66 @@ airflow-init:
 condition: service_completed_successfully
 ```
 
-5. Initialize db with this command
+5.3 Add an aditional volume for reports
+```
+  volumes:
+    - ./reports:/opt/airflow/reports
+```
 
+6. Create folders for dags, logs, plugins and reports
+```
+mkdir -p ./dags ./logs ./plugins ./reports
+```
+
+4. initialize db
+```
+docker-compose up airflow-init
+```
+It downloads all docker containers with airflow username and password
+
+Result should look somewhat like:
+```
+airflow_docker-airflow-init-1  | 2.5.0
+airflow_docker-airflow-init-1 exited with code 0
+```
+
+7. Run airflow in docker
+```
+ docker-compose up
+(docker-compose up -d for detached mode)
+```
+
+To see what is running: 
+```
+docker ps
+```
+
+8. Check airflow dashboard in your browser
+http://0.0.0.0:8080/home
+user/password: airflow/airflow
+
+**Note from the official docs:** The docker-compose environment we have prepared is a “quick-start” one. It was not designed to be used in production and it has a number of caveats - one of them being that the best way to recover from any problem is to clean it up and restart from scratch.
+The best way to do this is to:
+- Run docker-compose down --volumes --remove-orphans command in the directory you downloaded the docker-compose.yaml file
+- Remove the entire directory where you downloaded the docker-compose.yaml file rm -rf '<DIRECTORY>'
+- Run through this guide from the very beginning, starting by re-downloading the docker-compose.yaml file
+
+## Removing Airflow default DAG examples
+
+1. In the docker-compose.yaml set
+```AIRFLOW__CORE__LOAD_EXAMPLES: 'false' ```
+
+2. Then shut down docker and delete all volumes:
+```
+docker-compose down -v
+```
+
+3. Then init airflow again:  
 ```
 docker-compose up airflow-init
 ```
 
-6. Run airflow in docker
-
+4. And run the docker: 
 ```
-docker-compose up
+docker-compose up -d
 ```
-
-7. After all check in browser
-
-```
-localhost:8080
-```
-
-user & password: airflow/airflow
